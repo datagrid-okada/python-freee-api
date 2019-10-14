@@ -220,3 +220,8 @@ freee.get_companies()
 - [x] 賞与明細
     - [x] GET /api/v1/bonuses/employee_payroll_statements 一覧の取得
     - [x] GET /api/v1/bonuses/employee_payroll_statements/{employee_id} 取得
+
+# PyPIアップデート
+1. python setup.py sdist
+2. pip install twine
+3. twine upload dist/[latest version file]
