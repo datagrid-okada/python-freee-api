@@ -15,6 +15,7 @@ https://support.freee.co.jp/hc/ja/articles/115000145263-freee-APIのアクセス
 client_id = "xxx"
 client_secret = "xxx"
 company_id = xxxxx
+authorization_code = xxxx
 token_filename = "token.json" # トークン情報を保存するJsonファイル名（適当で良い）
 
 freee = Freee(client_id, client_secret, company_id, token_filename)
@@ -24,10 +25,16 @@ freee.get_access_token(authorization_code) # 認可コードを与えると、�
 # 各種情報の取得例
 ```
 freee = Freee(client_id, client_secret, company_id, token_filename)
+token_dict = freee.read_tokens()
+freee.set_tokens(token_dict)
 freee.get_companies()
 ```
 
 ## To do
+
+### 諸々
+- 事務所IDを初期化時に入力しなくて良い用に修正（初期化時には通常は知らない）
+
 ### 会計freeeの実装リスト
 
 - [ ] Account items ( s)
