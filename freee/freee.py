@@ -1152,7 +1152,7 @@ class Freee():
             }
         """
         request_method = "get"
-        url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employee", employee_id, "basic_pay_rule"]))
+        url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employees", employee_id, "basic_pay_rule"]))
         return self.send_request(request_method, url, payload)
 
 # ===========================================
