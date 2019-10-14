@@ -504,34 +504,34 @@ class Freee():
 # ===========================================
 #     ログインユーザー（ログインユーザーの取得）
 # ===========================================
-def get_login_user(self, **payload):
+    def get_login_user(self, **payload):
 
-    """ログインユーザーの取得
+        """ログインユーザーの取得
 
-    このリクエストの認可セッションにおけるログインユーザの情報を返します。人事労務freeeでは一人のログインユーザを複数の事業所に関連付けられるため、このユーザと関連のあるすべての事業所の情報をリストで返します。他のAPIのパラメータとして company_id が求められる場合は、このAPIで取得した company_id を使用します。
+        このリクエストの認可セッションにおけるログインユーザの情報を返します。人事労務freeeでは一人のログインユーザを複数の事業所に関連付けられるため、このユーザと関連のあるすべての事業所の情報をリストで返します。他のAPIのパラメータとして company_id が求められる場合は、このAPIで取得した company_id を使用します。
 
-    Args:
-        No parameters
+        Args:
+            No parameters
 
-    Returns:
-        dict: like below
-        {
-          "id": 0,
-          "companies": [
+        Returns:
+            dict: like below
             {
               "id": 0,
-              "name": "string",
-              "role": "string",
-              "external_cid": "string",
-              "employee_id": 0,
-              "display_name": "string"
+              "companies": [
+                {
+                  "id": 0,
+                  "name": "string",
+                  "role": "string",
+                  "external_cid": "string",
+                  "employee_id": 0,
+                  "display_name": "string"
+                }
+              ]
             }
-          ]
-        }
-    """
-    request_method = "get"
-    url = urllib.parse.urljoin(self.hr_endpoint, "users/me")
-    return self.send_request(request_method, url, payload)
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.hr_endpoint, "users/me")
+        return self.send_request(request_method, url, payload)
 
 # ===========================================
 #     給与明細（給与明細の操作)
@@ -1127,34 +1127,33 @@ def get_login_user(self, **payload):
 #     従業員の基本給(従業員の基本給の操作)
 # ===========================================
 
+    def get_basic_pay_rule(self, employee_id, **payload):
 
-def get_basic_pay_rule(self, employee_id, **payload):
+        """従業員の基本給の取得
 
-    """従業員の基本給の取得
+        指定した従業員・日付の基本給情報を返します。
 
-    指定した従業員・日付の基本給情報を返します。
+        Args:
+            employee_id (int): 従業員ID
+            company_id (int): 事務所ID
+            year(int): 対象年
+            month(int): 対象月
 
-    Args:
-        employee_id (int): 従業員ID
-        company_id (int): 事務所ID
-        year(int): 対象年
-        month(int): 対象月
-
-    Returns:
-        dict: like below
-        {
-          "employee_basic_pay_rule": {
-            "id": 0,
-            "company_id": 0,
-            "employee_id": 0,
-            "pay_calc_type": "string",
-            "pay_amount": 0
-          }
-        }
-    """
-    request_method = "get"
-    url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employee", employee_id, "basic_pay_rule"]))
-    return self.send_request(request_method, url, payload)
+        Returns:
+            dict: like below
+            {
+              "employee_basic_pay_rule": {
+                "id": 0,
+                "company_id": 0,
+                "employee_id": 0,
+                "pay_calc_type": "string",
+                "pay_amount": 0
+              }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employee", employee_id, "basic_pay_rule"]))
+        return self.send_request(request_method, url, payload)
 
 # ===========================================
 #     従取得業員の銀行口座(従業員の銀行口座の操作)
