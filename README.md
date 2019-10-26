@@ -76,15 +76,15 @@ freee.get_companies()
     - [ ] GET /items 品目一覧の取得
     - [ ] POST /items 品目の作成
 
-- [ ] Journals (仕訳帳)
-    - [ ] GET /journals ダウンロード要求
-    - [ ] GET /journals/reports/{id}/status ステータス確認
-    - [ ] GET /journals/reports/{id}/download ダウンロード実行
+- [x] Journals (仕訳帳)
+    - [x] GET /journals ダウンロード要求
+    - [x] GET /journals/reports/{id}/status ステータス確認
+    - [x] GET /journals/reports/{id}/download ダウンロード実行
 
 - [ ] ManualJournals (振替伝票)
     - [ ] DELETE /manual_journals/{id} 振替伝票の削除
-    - [ ] GET /manual_journals 振替伝票一覧の取得
-    - [ ] GET /manual_journals/{id} 振替伝票の取得
+    - [x] GET /manual_journals 振替伝票一覧の取得
+    - [x] GET /manual_journals/{id} 振替伝票の取得
     - [ ] POST /manual_journals 振替伝票の作成
     - [ ] PUT /manual_journals/{id} 振替伝票の更新
 

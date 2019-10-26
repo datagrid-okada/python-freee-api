@@ -501,6 +501,284 @@ class Freee():
         url = urllib.parse.urljoin(self.account_endpoint, "expense_application_line_templates")
         return self.send_request(request_method, url, payload)
 
+# ===========================================
+#     Journals (仕訳帳)
+# ===========================================
+    def get_request_downloading_journals(self, **payload):
+
+        """ダウンロード要求
+
+        ユーザが所属する事業所の仕訳帳のダウンロードをリクエストします 生成されるファイルに関しては、ヘルプページをご参照ください
+
+        Args:
+            download_type (str): ダウンロード形式. Available values : csv, pdf, yayoi, generic
+            company_id (int):  事業所ID
+            visible_tags (array[string], optional): 補助科目やコメントとして出力する項目. Available values : partner, item, tag, section, description, wallet_txn_description, all
+            start_date (str, optional): 取得開始日 (yyyy-mm-dd)
+            end_date (str, optional): 取得終了日 (yyyy-mm-dd)
+        Note:
+            定義
+                download_type
+                    csv
+                    pdf
+                    yayoi (csv alias)
+                    generic
+                visible_tags : 指定しない場合は従来の仕様の仕訳帳が出力されます
+                    partner : 取引先タグ
+                    item : 品目タグ
+                    tag : メモタグ
+                    section : 部門タグ
+                    description : 備考欄
+                    wallet_txn_description : 明細の備考欄
+                    all : 指定された場合は上記の設定をすべて有効として扱います
+                id : 受け付けID
+
+        Returns:
+            dict: like below
+            {
+              "journals": {
+                "id": 1,
+                "messages": ":id でリクエストを受け付けました。",
+                "company_id": 1,
+                "download_type": "csv",
+                "start_date": "2017-05-01",
+                "end_date": "2017-05-31",
+                "visible_tags": [
+                  "all"
+                ],
+                "status_url": "https://api.freee.co.jp/api/1/journals/reports/4/status"
+              }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, "journals")
+        return self.send_request(request_method, url, payload)
+
+    def get_downloading_journals_status(self, id, **payload):
+
+        """ステータス確認
+
+        ダウンロードリクエストのステータスを確認する
+        ＊このAPIは無料プランのアカウントではご利用になれません
+
+        Args:
+            company_id (int):  事業所ID
+            id (int): 受付ID
+            visible_tags (array[string], optional): 補助科目やコメントとして出力する項目. Available values : partner, item, tag, section, description, wallet_txn_description, all
+            start_date (str, optional): 取得開始日 (yyyy-mm-dd)
+            end_date (str, optional): 取得終了日 (yyyy-mm-dd)
+        Note:
+            定義
+                enqueued : 実行待ち
+                working : 実行中
+                uploaded : 準備完了
+                id : 受け付けID
+
+        Returns:
+            dict: like below
+            {
+              "journals": {
+                "id": 1,
+                "company_id": 1,
+                "download_type": "csv",
+                "status": "csv",
+                "start_date": "2017-05-01",
+                "end_date": "2017-05-31",
+                "visible_tags": [
+                  "all"
+                ],
+                "download_url": "https://api.freee.co.jp/api/1/journals/reports/1/download"
+              }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["journals", "reports", id, "status"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_download_journals(self, id, **payload):
+
+        """ダウンロード実行
+
+        ダウンロードを実行する
+        ＊このAPIは無料プランのアカウントではご利用になれません
+        ＊レスポンスを直接returnしているので注意
+
+        Args:
+            company_id (int):  事業所ID
+            id (int): 受付ID
+        Note:
+            定義
+                id : 受け付けID
+
+        Returns:
+            None
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["journals", "reports", id, "download"]))
+
+        if self.confirm_expired():
+            token_dict = self.run_refresh_token()
+            self.save_tokens(token_dict)
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + self.access_token
+        }
+        res = requests.get(url, headers=headers, params=payload)
+        if res.ok:
+            return res
+        else:
+            raise res.raise_for_status()
+
+# ===========================================
+#     ManualJournals (振替伝票)
+# ===========================================
+
+    def get_manual_journals(self, **payload):
+
+        """振替伝票一覧の取得
+
+        指定した事業所の振替伝票一覧を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            start_issue_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_issue_date (str, optional): 発生日で絞込：終了日(yyyy-mm-dd)
+            entry_side (str, optional): 貸借で絞込 (貸方: credit, 借方: debit). Available values : credit, debit
+            account_item_id (int, optional): 勘定科目IDで絞込
+            min_amount (int, optional): 金額で絞込：下限
+            max_amount (int, optional): 金額で絞込：上限
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択の貸借行を絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択の貸借行を絞り込めます）
+            section_id (int, optional): 部門IDで絞込（0を指定すると、部門が未選択の貸借行を絞り込めます）
+            segment_1_tag_id (int, optional): セグメント１IDで絞り込み（0を指定すると、セグメント１が未選択の貸借行を絞り込めます）
+            segment_2_tag_id (int, optional): セグメント２IDで絞り込み（0を指定すると、セグメント２が未選択の貸借行を絞り込めます）
+            segment_3_tag_id (int, optional): セグメント３IDで絞り込み（0を指定すると、セグメント３が未選択の貸借行を絞り込めます）
+            comment_status (str, optional): コメント状態で絞込（自分宛のコメント: posted_with_mention, 自分宛のコメント-未解決: raised_with_mention, 自分宛のコメント-解決済: resolved_with_mention, コメントあり: posted, 未解決: raised, 解決済: resolved, コメントなし: none）Available values : posted_with_mention, raised_with_mention, resolved_with_mention, posted, raised, resolved, none
+            comment_important (bool, optional): 重要コメント付きの振替伝票を絞込
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）.Available values : only, without
+            txn_number (str, optional): 仕訳番号で絞込（事業所の仕訳番号形式が有効な場合のみ）
+            offset  (int, optional): 取得レコードのオフセット (デフォルト: 0)
+            limit (int, optional): 取得レコードの件数 (デフォルト: 20, 最大: 500)
+        Note:
+            定義
+                issue_date : 発生日
+                adjustment : 決算整理仕訳フラグ（true: 決算整理仕訳, false: 日常仕訳）
+                txn_number : 仕訳番号
+                details : 振替伝票の貸借行
+                entry_side : 貸借区分
+                    credit : 貸方
+                    debit : 借方
+                amount : 金額
+
+            注意点
+                振替伝票は売掛・買掛レポートには反映されません。債権・債務データの登録は取引(Deals)をお使いください。
+                事業所の仕訳番号形式が有効な場合のみ、レスポンスで仕訳番号(txn_number)を返します。
+                セグメントタグ情報は法人向けのプロフェッショナルプラン以上で利用可能です。利用可能なセグメントの数は、法人向けのプロフェッショナルプランの場合は1つ、エンタープライズプランの場合は3つです。
+                partner_codeを利用するには、事業所の設定から取引先コードの利用を有効にする必要があります。またpartner_codeとpartner_idは同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "manual_journals": [
+                {
+                  "id": 1,
+                  "company_id": 1,
+                  "issue_date": "2018-01-01",
+                  "adjustment": false,
+                  "details": [
+                    {
+                      "id": 1,
+                      "entry_side": "credit",
+                      "account_item_id": 1,
+                      "tax_code": 1,
+                      "tag_ids": [
+                        1
+                      ],
+                      "tag_names": [
+                        "メモタグ"
+                      ],
+                      "segment_1_tag_id": 1,
+                      "segment_1_tag_name": 0,
+                      "segment_2_tag_id": 1,
+                      "segment_2_tag_name": 0,
+                      "segment_3_tag_id": 1,
+                      "segment_3_tag_name": 0,
+                      "amount": 108000,
+                      "vat": 8000,
+                      "description": "備考"
+                    }
+                  ]
+                }
+              ]
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, "manual_journals")
+        return self.send_request(request_method, url, payload)
+
+    def get_manual_journal(self, id, **payload):
+
+        """振替伝票の取得
+
+        指定した事業所の振替伝票を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            id (int): 振替伝票ID
+        Note:
+            定義
+                issue_date : 発生日
+                adjustment : 決算整理仕訳フラグ（true: 決算整理仕訳, false: 日常仕訳）
+                txn_number : 仕訳番号
+                details : 振替伝票の貸借行
+                entry_side : 貸借区分
+                    credit : 貸方
+                    debit : 借方
+                amount : 金額
+
+            注意点
+                振替伝票は売掛・買掛レポートには反映されません。債権・債務データの登録は取引(Deals)をお使いください。
+                事業所の仕訳番号形式が有効な場合のみ、レスポンスで仕訳番号(txn_number)を返します。
+                セグメントタグ情報は法人向けのプロフェッショナルプラン以上で利用可能です。利用可能なセグメントの数は、法人向けのプロフェッショナルプランの場合は1つ、エンタープライズプランの場合は3つです。
+
+        Returns:
+            dict: like below
+            {
+              "manual_journal": {
+                "id": 1,
+                "company_id": 1,
+                "issue_date": "2018-01-01",
+                "adjustment": false,
+                "details": [
+                  {
+                    "id": 1,
+                    "entry_side": "credit",
+                    "account_item_id": 1,
+                    "tax_code": 1,
+                    "tag_ids": [
+                      1
+                    ],
+                    "tag_names": [
+                      "メモタグ"
+                    ],
+                    "segment_1_tag_id": 1,
+                    "segment_1_tag_name": 0,
+                    "segment_2_tag_id": 1,
+                    "segment_2_tag_name": 0,
+                    "segment_3_tag_id": 1,
+                    "segment_3_tag_name": 0,
+                    "amount": 108000,
+                    "vat": 8000,
+                    "description": "備考"
+                  }
+                ]
+              }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["manual_journals", id]))
+        return self.send_request(request_method, url, payload)
 
 # ===========================================
 #     人事労務freee API
