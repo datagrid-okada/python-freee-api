@@ -37,18 +37,19 @@ freee.get_companies()
 
 ### 会計freeeの実装リスト
 
-- [ ] Account items ( s)
+- [ ] Account items (勘定科目)
     - [x] GET /account_items/{id} 勘定科目の詳細情報の取得
     - [x] GET /account_items 勘定科目一覧の取得
     - [ ] POST /account_items 勘定科目の作成
     - [ ] PUT /account_items/{id} 勘定科目の更新
 
-- [ ] Banks (連携サービス)
+- [ ] Banks (連携サービス) ← API自体にバグの可能性あり
     - [ ] GET /banks 連携サービス一覧の取得
+    - [ ] GET /banks{id} 連携サービスの取得
 
 - [ ] Companies (事業所)
     - [x] GET /companies 事業所一覧の取得
-    - [ ] GET /companies/{id} 事業所の詳細情報の取得
+    - [x] GET /companies/{id} 事業所の詳細情報の取得
     - [ ] PUT /companies/{id} 事業所情報の更新
 
 - [ ] Deals取引（収入／支出）
@@ -61,12 +62,12 @@ freee.get_companies()
     - [x] GET /expense_application_line_templates 経費科目一覧の取得
 
 - [ ] Expense applications (経費精算)
-    - [ ]DELETE /expense_applications/{id} 経費申請の削除
+    - [ ] DELETE /expense_applications/{id} 経費申請の削除
     - [ ] POST /expense_applications 経費申請の作成
     - [ ] PUT /expense_applications/{id} 経費申請の更新
 
 - [ ] Invoices (請求書)
-    - [ ]DELETE /invoices/{id} 請求書の削除
+    - [ ] DELETE /invoices/{id} 請求書の削除
     - [ ] GET /invoices 請求書一覧の取得
     - [ ] POST /invoices 請求書の作成
     - [ ] PUT /invoices/{id} 請求書の更新
@@ -94,7 +95,7 @@ freee.get_companies()
     - [ ] PUT /partners/code/{code} 取引先の更新
 
 - [ ] Payments (取引の支払行)
-    - [ ]DELETE /deals/{id}/payments/{payment_id} 取引（収入／支出）の支払行削除
+    - [ ] DELETE /deals/{id}/payments/{payment_id} 取引（収入／支出）の支払行削除
     - [ ] POST /deals/{id}/payments 取引（収入／支出）の支払行作成
     - [ ] PUT /deals/{id}/payments/{payment_id} 取引（収入／支出）の支払行更新
 
@@ -102,18 +103,18 @@ freee.get_companies()
     - [ ] POST /receipts ファイルボックス 証憑ファイルアップロード
 
 - [ ] Renews (取引の+更新)
-    - [ ]DELETE /deals/{id}/renews/{renew_id} 取引（収入／支出）の+更新の削除
+    - [ ] DELETE /deals/{id}/renews/{renew_id} 取引（収入／支出）の+更新の削除
     - [ ] POST /deals/{id}/renews 取引（収入／支出）に対する+更新の作成
     - [ ] PUT /deals/{id}/renews/{renew_id} 取引（収入／支出）の+更新の更新
 
 - [ ] Sections (部門)
-    - [ ]DELETE /sections/{id} 部門の削除
+    - [ ] DELETE /sections/{id} 部門の削除
     - [ ] GET /sections 部門一覧の取得
     - [ ] POST /sections 部門の作成
     - [ ] PUT /sections/{id} 部門の更新
 
 - [ ] Segment tags (セグメントタグ)
-    - [ ]DELETE /segments/{segment_id}/tags/{id} セグメントタグの削除
+    - [ ] DELETE /segments/{segment_id}/tags/{id} セグメントタグの削除
     - [ ] GET /segments/{segment_id}/tags セグメントタグ一覧の取得
     - [ ] POST /segments/{segment_id}/tags セグメントの作成
     - [ ] PUT /segments/{segment_id}/tags/{id} セグメントタグの更新
@@ -222,5 +223,6 @@ freee.get_companies()
     - [x] GET /api/v1/bonuses/employee_payroll_statements/{employee_id} 取得
 
 # PyPIアップデート
+1. setup.pyを修正
 1. python setup.py sdist
-2. twine upload dist/[latest version file]
+1. twine upload dist/[latest version file]

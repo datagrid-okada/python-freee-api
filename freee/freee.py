@@ -175,6 +175,10 @@ class Freee():
         return self.send_request(request_method, url, payload)
 
 # ===========================================
+#     Banks (連携サービス)
+# ===========================================
+
+# ===========================================
 #     Companies(事務所)
 # ===========================================
 
@@ -229,6 +233,62 @@ class Freee():
         url = urllib.parse.urljoin(self.account_endpoint, "companies")
         return self.send_request(request_method, url, payload)
 
+    def get_company(self, company_id, **payload):
+        """事業所の詳細情報の取得
+
+        ユーザが所属する事業所の詳細を取得する
+
+        Args:
+            id (int): 事業所ID
+            details (bool): 取得情報に勘定科目・税区分コード・税区分・品目・取引先・部門・メモタグ・口座の一覧を含める. Available values : true
+            account_items (bool): 取得情報に勘定科目一覧を含める. Available values : true
+            taxes (bool): 取得情報に税区分コード・税区分一覧を含める. Available values : true
+            items (bool): 取得情報に品目一覧を含める. Available values : true
+            partners (bool): 取得情報に取引先一覧を含める. Available values : true
+            sections (bool): 取得情報に部門一覧を含める. Available values : true
+            tags (bool): 取得情報にメモタグ一覧を含める. Available values : true
+            walletables (bool): 取得情報に口座一覧を含める. Available values : true
+
+
+        Returns:
+            dict: like below
+            {
+              "company": {
+                "id": 1,
+                "display_name": "freee事務所",
+                "tax_at_source_calc_type": 0,
+                "corporate_number": "1234567890123",
+                "txn_number_format": "not_used",
+                "default_wallet_account_id": 1,
+                "private_settlement": true,
+                "minus_format": 0,
+                "role": "admin",
+                "phone1": "03-1234-xxxx",
+                "zipcode": "000-0000",
+                "prefecture_code": 4,
+                "street_name1": "ＸＸ区ＹＹ１−１−１",
+                "street_name2": "ビル１Ｆ",
+                "invoice_layout": 0,
+                "invoice_style": 0,
+                "amount_fraction": 0,
+                "industry_class": "agriculture_forestry_fisheries_ore",
+                "industry_code": "transport_delivery",
+                "workflow_setting": "disabled",
+                "use_partner_code": true
+              }
+            }
+
+        Notes:
+            定義
+            role
+                admin : 管理者
+                simple_accounting : 一般
+                self_only : 取引登録のみ
+                read_only : 閲覧のみ
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["companies", str(company_id)]))
+        return self.send_request(request_method, url, payload)
 
 # ===========================================
 #     Deals(取引(収入/支出))
