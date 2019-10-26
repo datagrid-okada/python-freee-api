@@ -140,7 +140,7 @@ class Freee():
             }
         """
         request_method = "get"
-        url = urllib.parse.urljoin(self.account_endpoint, str(account_item_id))
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["account_items", str(account_item_id)]))
         return self.send_request(request_method, url, payload)
 
 # ===========================================
