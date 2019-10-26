@@ -39,7 +39,7 @@ freee.get_companies()
 
 - [ ] Account items ( s)
     - [x] GET /account_items/{id} 勘定科目の詳細情報の取得
-    - [ ] GET /account_items 勘定科目一覧の取得
+    - [x] GET /account_items 勘定科目一覧の取得
     - [ ] POST /account_items 勘定科目の作成
     - [ ] PUT /account_items/{id} 勘定科目の更新
 
@@ -223,5 +223,4 @@ freee.get_companies()
 
 # PyPIアップデート
 1. python setup.py sdist
-2. pip install twine
-3. twine upload dist/[latest version file]
+2. twine upload dist/[latest version file]

@@ -143,6 +143,37 @@ class Freee():
         url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["account_items", str(account_item_id)]))
         return self.send_request(request_method, url, payload)
 
+    def get_account_items(self, **payload):
+
+        """ 勘定科目一覧の取得
+
+        指定した事業所の勘定科目一覧を取得する
+
+        Args:
+            company_id (int): 事務所ID
+            base_date (str, optional): 基準日:指定した場合、勘定科目に紐づく税区分(default_tax_code)が、基準日の税率に基づいて返ります。
+
+        Returns:
+            dict: like below
+            {
+              "account_items": [
+                {
+                  "id": 1,
+                  "name": "ソフトウェア",
+                  "default_tax_id": 34,
+                  "default_tax_code": 34,
+                  "categories": [
+                    "資産"
+                  ],
+                  "available": true
+                }
+              ]
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, "account_items")
+        return self.send_request(request_method, url, payload)
+
 # ===========================================
 #     Companies(事務所)
 # ===========================================
