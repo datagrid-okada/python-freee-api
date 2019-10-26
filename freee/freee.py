@@ -613,7 +613,6 @@ class Freee():
         Returns:
             None
         """
-        request_method = "get"
         url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["journals", "reports", id, "download"]))
 
         if self.confirm_expired():
