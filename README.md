@@ -174,10 +174,10 @@ freee.get_companies()
     - [x] GET /api/v1/salaries/employee_payroll_statements 一覧の取得
     - [x] GET /api/v1/salaries/employee_payroll_statements/{employee_id} 取得
 
-- [ ] 勤怠
-    - [ ] DELETE /api/v1/employees/{emp_id}/work_records/{date} 削除
+- [x] 勤怠
+    - [x] DELETE /api/v1/employees/{emp_id}/work_records/{date} 削除
     - [x] GET /api/v1/employees/{emp_id}/work_records/{date} 取得
-    - [ ] PUT /api/v1/employees/{emp_id}/work_records/{date} 更新
+    - [x] PUT /api/v1/employees/{emp_id}/work_records/{date} 更新
 
 - [ ] 勤怠情報サマリ
     - [x] GET /api/v1/employees/{emp_id}/work_record_summaries/{year}/{month} 勤怠情報月次サマリの取得

@@ -83,10 +83,30 @@ class Freee():
                 'Authorization': 'Bearer ' + self.access_token
             }
             res = requests.get(url, headers=headers, params=payload)
-        if res.ok:
-            return res.json()
-        else:
-            raise res.raise_for_status()
+            if res.ok:
+                return res.json()
+            else:
+                raise res.raise_for_status()
+        elif request_method == "put":
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + self.access_token
+            }
+            res = requests.put(url, headers=headers, data=json.dumps(payload))
+            if res.ok:
+                return res.json()
+            else:
+                raise res.raise_for_status()
+        elif request_method == "delete":
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + self.access_token
+            }
+            res = requests.delete(url, headers=headers, data=json.dumps(payload))
+            if res.ok:
+                return res
+            else:
+                raise res.raise_for_status()
 
 
 # ===========================================
@@ -1594,6 +1614,28 @@ class Freee():
 #     勤怠（勤怠の操作)
 # ===========================================
 
+    def delete_work_record(self, employee_id, date, payload):
+
+        """勤怠情報削除
+
+        指定した従業員の勤怠情報を削除します。
+
+        Args:
+            employee_id (str): 従業員ID
+            date (str): 指定日 like 2019-09-01
+            payload (dict): Request params
+
+        Request params:
+            {
+              "company_id": 0
+            }
+
+        Returns:
+        """
+        request_method = "delete"
+        url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employees", str(employee_id), "work_records", date]))
+        return self.send_request(request_method, url, payload)
+
     def get_work_record(self, employee_id, date, **payload):
 
         """勤怠情報取得
@@ -1638,6 +1680,95 @@ class Freee():
 
         """
         request_method = "get"
+        url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employees", str(employee_id), "work_records", date]))
+        return self.send_request(request_method, url, payload)
+
+    def put_work_record(self, employee_id, date, payload):
+        """勤怠情報更新
+
+        指定した従業員の勤怠情報を更新します。
+
+        Args:
+            employee_id (str): 従業員ID
+            date (str): 指定日 like 2019-09-01
+            payload (dict): Request params
+
+        Request params:
+            出勤日について出退勤時刻および休憩時間を更新する場合は以下のようなパラメータをリクエストします。
+                {
+                  "work_record": {
+                    "company_id": 1,
+                    "break_records": [
+                      {
+                        "clock_in_at": "2017-05-25T12:00:00.000+09:00",
+                        "clock_out_at": "2017-05-25T13:00:00.000+09:00"
+                      }
+                    ],
+                    "clock_in_at": "2017-05-25T09:10:00.000+09:00",
+                    "clock_out_at": "2017-05-25T18:20:00.000+09:00"
+                  }
+                }
+
+            勤務パターンや既定の所定労働時間を変更する場合は use_default_work_pattern に false を指定するとともに、各設定を上書きするパラメータをリクエストします。
+                {
+                  "work_record": {
+                    "company_id": 1,
+                    "break_records": [
+                      {
+                        "clock_in_at": "2017-05-25T12:00:00.000+09:00",
+                        "clock_out_at": "2017-05-25T13:00:00.000+09:00"
+                      }
+                    ],
+                    "clock_in_at": "2017-05-25T09:10:00.000+09:00",
+                    "clock_out_at": "2017-05-25T18:20:00.000+09:00",
+                    "day_pattern": "normal_day",
+                    "normal_work_clock_in_at": "2017-05-25T01100:00.000+09:00",
+                    "normal_work_clock_out_at": "2017-12-20T20:00:00.000+09:00",
+                    "normal_work_mins": 0,
+                    "use_default_work_pattern": false
+                  }
+                }
+
+            欠勤を付ける場合は company_idとis_absence 以外のパラメータは必要ありません。
+                {
+                  "work_record": {
+                    "company_id": 1,
+                    "is_absence": true
+                  }
+                }
+
+        Returns:
+            dict: like below
+                {
+                  "break_records": [
+                    {
+                      "clock_in_at": "2019-10-27T12:52:52.524Z",
+                      "clock_out_at": "2019-10-27T12:52:52.524Z"
+                    }
+                  ],
+                  "clock_in_at": "2019-10-27T12:52:52.524Z",
+                  "clock_out_at": "2019-10-27T12:52:52.524Z",
+                  "date": "2019-10-27T12:52:52.524Z",
+                  "day_pattern": "string",
+                  "schedule_pattern": "string",
+                  "early_leaving_mins": 0,
+                  "is_absence": false,
+                  "is_editable": true,
+                  "lateness_mins": 0,
+                  "normal_work_clock_in_at": "2019-10-27T12:52:52.524Z",
+                  "normal_work_clock_out_at": "2019-10-27T12:52:52.524Z",
+                  "normal_work_mins": 0,
+                  "normal_work_mins_by_paid_holiday": 0,
+                  "note": "string",
+                  "paid_holiday": 0.5,
+                  "use_attendance_deduction": true,
+                  "use_default_work_pattern": true,
+                  "total_overtime_work_mins": 0,
+                  "total_holiday_work_mins": 0,
+                  "total_latenight_work_mins": 0
+                }
+        """
+        request_method = "put"
         url = urllib.parse.urljoin(self.hr_endpoint, ("/").join(["employees", str(employee_id), "work_records", date]))
         return self.send_request(request_method, url, payload)
 
