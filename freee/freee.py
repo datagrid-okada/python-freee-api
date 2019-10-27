@@ -780,6 +780,519 @@ class Freee():
         return self.send_request(request_method, url, payload)
 
 # ===========================================
+#     Trial balance (試算表)
+# ===========================================
+
+    def get_reports_trial_bs(self, **payload):
+        """貸借対照表の取得
+
+        指定した事業所の貸借対照表を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                opening_balance : 期首残高
+                debit_amount : 借方金額
+                credit_amount: 貸方金額
+                closing_balance : 期末残高
+                composition_ratio : 構成比
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_bs": {
+                "company_id": 1,
+                "fiscal_year": 2019,
+                "start_month": 1,
+                "end_month": 12,
+                "start_date": "2019-01-01",
+                "end_date": "2019-12-31",
+                "account_item_display_type": "account_item",
+                "breakdown_display_type": "partner",
+                "partner_id": 1,
+                "partner_code": "code001",
+                "item_id": 1,
+                "adjustment": "only",
+                "created_at": "2018-09-10T13:47:24.000+09:00",
+                "balances": [
+                  {
+                    "account_item_id": 192,
+                    "account_item_name": "現金",
+                    "partners": [
+                      {
+                        "id": 22,
+                        "name": "freee",
+                        "opening_balance": 0,
+                        "debit_amount": 0,
+                        "credit_amount": 2592,
+                        "closing_balance": -25920,
+                        "composition_ratio": 0.85
+                      }
+                    ],
+                    "items": [
+                      {
+                        "id": 1,
+                        "name": "源泉所得税",
+                        "opening_balance": 0,
+                        "debit_amount": 0,
+                        "credit_amount": 2592,
+                        "closing_balance": -25920,
+                        "composition_ratio": 0.85
+                      }
+                    ],
+                    "account_category_id": 8,
+                    "account_category_name": "流動資産",
+                    "total_line": true,
+                    "hierarchy_level": 3,
+                    "parent_account_category_id": 19,
+                    "parent_account_category_name": "他流動資産",
+                    "opening_balance": 0,
+                    "debit_amount": 0,
+                    "credit_amount": 2592,
+                    "closing_balance": -25920,
+                    "composition_ratio": 0.85
+                  }
+                ]
+              }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_bs"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_bs_two_years(self, **payload):
+        """貸借対照表(前年比較)の取得
+
+        指定した事業所の貸借対照表(前年比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                last_year_closing_balance: 前年度期末残高
+                closing_balance : 期末残高
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_bs_two_years" :
+                {
+                  "company_id" : 1,
+                  "fiscal_year" : 2017,
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1000,
+                    "account_item_name" : "現金",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "流動資産",
+                    "last_year_closing_balance" : 25000,
+                    "closing_balance" : 100000,
+                    "year_on_year" : 0.85
+                      },
+                      ...
+                      ]
+                }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_bs_two_years"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_bs_three_years(self, **payload):
+        """貸借対照表(３期間比較)の取得
+
+        指定した事業所の貸借対照表(３期間比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+
+        Note:
+            定義
+
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                closing_balance : 期末残高
+                two_years_before_closing_balance: 前々年度期末残高
+                last_year_closing_balance: 前年度期末残高
+                year_on_year : 前年比
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_bs_three_years" :
+                {
+                  "company_id" : 1,
+                  "fiscal_year" : 2017,
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1000,
+                    "account_item_name" : "現金",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "流動資産",
+                    "two_year_before_closing_balance" : 50000,
+                    "last_year_closing_balance" : 25000,
+                    "closing_balance" : 100000,
+                    "year_on_year" : 0.85
+                  },
+                  ...
+                  ]
+                }
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_bs_three_years"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_pl(self, **payload):
+        """損益計算書の取得
+
+        指定した事業所の損益計算書(前年比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            section_id (int, optional): 部門IDで絞込（0を指定すると、部門が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+            cost_allocation (str, optional): 配賦仕訳で絞込（配賦仕訳のみ：only,配賦仕訳以外：without）Available values : only, not_include
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                opening_balance : 期首残高
+                debit_amount : 借方金額
+                credit_amount: 貸方金額
+                closing_balance : 期末残高
+                composition_ratio : 構成比
+
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_pl" :
+                {
+                  "company_id" : 1,
+                  "fiscal_year" : 2017,
+                  "breakdown_display_type" : "partner",
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1500,
+                    "account_item_name" : "売上高",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "営業収益",
+                    "opening_balance" : 100000,
+                    "debit_amount" : 50000,
+                    "credit_amount" : 20000,
+                    "closing_balance" : 130000,
+                    "composition_ratio" : 0.25
+                    "partners" : [{
+                      "id" : 123,
+                      "name" : "freee",
+                      "long_name" : "freee株式会社",
+                      "opening_balance" : 100000,
+                      "debit_amount" : 50000,
+                      "credit_amount" : 20000,
+                      "closing_balance" : 130000,
+                      "composition_ratio" : 0.25
+                      },
+                    ...
+                    ]
+                  },
+                  ...
+                  ]
+                }
+            }
+
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_pl"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_pl_two_years(self, **payload):
+        """損益計算書(前年比較)の取得
+
+        指定した事業所の損益計算書(前年比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            section_id (int, optional): 部門IDで絞込（0を指定すると、部門が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+            cost_allocation (str, optional): 配賦仕訳で絞込（配賦仕訳のみ：only,配賦仕訳以外：without）Available values : only, not_include
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                last_year_closing_balance: 前年度期末残高
+                closing_balance : 期末残高
+                year_on_year : 前年比
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_pl_two_years" :
+                {
+                  "company_id" : 1,
+                  "fiscal_year" : 2017,
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1500,
+                    "account_item_name" : "売上高",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "営業収益",
+                    "last_year_closing_balance" : 25000,
+                    "closing_balance" : 100000,
+                    "year_on_year" : 0.85
+                  },
+                  ...
+                  ]
+                }
+            }
+
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_pl_two_years"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_pl_three_years(self, **payload):
+        """損益計算書(前年比較)の取得
+
+        指定した事業所の損益計算書(３期間比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            section_id (int, optional): 部門IDで絞込（0を指定すると、部門が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+            cost_allocation (str, optional): 配賦仕訳で絞込（配賦仕訳のみ：only,配賦仕訳以外：without）Available values : only, not_include
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                two_years_before_closing_balance: 前々年度期末残高
+                last_year_closing_balance: 前年度期末残高
+                closing_balance : 期末残高
+                year_on_year : 前年比
+
+            注意点
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_pl_three_years" :
+                {
+                  "company_id" : 1,
+                  "fiscal_year" : 2017,
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1500,
+                    "account_item_name" : "売上高",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "営業収益",
+                    "two_year_before_closing_balance" : 50000,
+                    "last_year_closing_balance" : 25000,
+                    "closing_balance" : 100000,
+                    "year_on_year" : 0.85
+                  },
+                  ...
+                  ]
+                }
+            }
+
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_pl_three_years"]))
+        return self.send_request(request_method, url, payload)
+
+    def get_reports_trial_pl_sections(self, **payload):
+        """損益計算書(部門比較)の取得
+
+        指定した事業所の損益計算書(部門比較)を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            section_ids (str): 出力する部門の指定（半角数字のidを半角カンマ区切りスペースなしで指定してください）
+            fiscal_year (int, optional): 会計年度
+            start_month (int, optional): 発生月で絞込：開始会計月(mm)
+            end_month (int, optional): 発生月で絞込：終了会計月(mm)
+            start_date (str, optional): 発生日で絞込：開始日(yyyy-mm-dd)
+            end_date (str, optional) 発生日で絞込：終了日(yyyy-mm-dd)
+            account_item_display_type (str, optional): 勘定科目の表示（勘定科目: account_item, 決算書表示:group）. Available values : account_item, group
+            breakdown_display_type (str, optional): 内訳の表示（取引先: partner, 品目: item, 勘定科目: account_item） ※勘定科目はaccount_item_display_typeが「group」の時のみ指定できます. Available values : partner, item, account_item
+            partner_id (int, optional): 取引先IDで絞込（0を指定すると、取引先が未選択で絞り込めます）
+            partner_code (str, optional): 取引先コードで絞込（事業所設定で取引先コードの利用を有効にしている場合のみ利用可能です）
+            item_id (int, optional): 品目IDで絞込（0を指定すると、品目が未選択で絞り込めます）
+            section_id (int, optional): 部門IDで絞込（0を指定すると、部門が未選択で絞り込めます）
+            adjustment (str, optional): 決算整理仕訳で絞込（決算整理仕訳のみ: only, 決算整理仕訳以外: without）. Available values : only, without
+            cost_allocation (str, optional): 配賦仕訳で絞込（配賦仕訳のみ：only,配賦仕訳以外：without）Available values : only, not_include
+
+        Note:
+            定義
+                created_at : 作成日時
+                account_item_name : 勘定科目名
+                hierarchy_level: 階層レベル
+                parent_account_item_name: 親の勘定科目名
+                closing_balance : 期末残高
+
+            注意点
+                個人向けのプレミアムプラン、法人向けのビジネスプラン以上で利用可能なAPIです。対象外のプランでは401エラーを返却します。
+                会計年度が指定されない場合、現在の会計年度がデフォルトとなります。
+                絞り込み条件の日付と、月または年度は同時に指定することはできません。
+
+        Returns:
+            dict: like below
+            {
+              "trial_pl_sections" :
+                {
+                  "company_id" : 1,
+                  "section_ids" : "1,2,3",
+                  "fiscal_year" : 2017,
+                  "created_at" : "2018-05-01 12:00:50"
+                  "balances" : [{
+                    "account_item_id" : 1500,
+                    "account_item_name" : "売上高",
+                    "hierarchy_level" : 2,
+                    "parent_account_item_id" : 100;
+                    "parent_account_item_name" : "営業収益",
+                    "closing_balance" : 1000000,
+                    "sections" : [{
+                      "id": 1
+                      "name": "営業部",
+                      "closing_balance" : 100000
+                    },
+                    {
+                      "id": 2
+                      "name": "広報部",
+                      "closing_balance" : 200000
+                    },
+                    {
+                      "id": 3
+                      "name": "人事部",
+                      "closing_balance" : 300000
+                    },
+                    ...
+                    ]
+                  },
+                  ...
+                  ]
+                }
+            }
+
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["reports", "trial_pl_sections"]))
+        return self.send_request(request_method, url, payload)
+
+
+# ===========================================
 #     人事労務freee API
 # ===========================================
 

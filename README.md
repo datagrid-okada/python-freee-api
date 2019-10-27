@@ -134,14 +134,14 @@ freee.get_companies()
     - [ ] GET /transfers 取引（振替）一覧の取得
     - [ ] POST /transfers 取引（振替）の作成
 
-- [ ] Trial balance (試算表)
-    - [ ] GET /reports/trial_bs 貸借対照表の取得
-    - [ ] GET /reports/trial_bs_two_years 貸借対照表(前年比較)の取得
-    - [ ] GET /reports/trial_bs_three_years 貸借対照表(３期間比較)の取得
-    - [ ] GET /reports/trial_pl 損益計算書の取得
-    - [ ] GET /reports/trial_pl_two_years 損益計算書(前年比較)の取得
-    - [ ] GET /reports/trial_pl_three_years 損益計算書(３期間比較)の取得
-    - [ ] GET /reports/trial_pl_sections 損益計算書(部門比較)の取得
+- [x] Trial balance (試算表)
+    - [x] GET /reports/trial_bs 貸借対照表の取得
+    - [x] GET /reports/trial_bs_two_years 貸借対照表(前年比較)の取得
+    - [x] GET /reports/trial_bs_three_years 貸借対照表(３期間比較)の取得
+    - [x] GET /reports/trial_pl 損益計算書の取得
+    - [x] GET /reports/trial_pl_two_years 損益計算書(前年比較)の取得
+    - [x] GET /reports/trial_pl_three_years 損益計算書(３期間比較)の取得
+    - [x] GET /reports/trial_pl_sections 損益計算書(部門比較)の取得
 
 - [ ] Users (ユーザ)
     - [ ] GET /users/me ログインユーザ情報の取得
