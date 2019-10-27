@@ -226,3 +226,4 @@ freee.get_companies()
 1. setup.pyを修正
 1. python setup.py sdist
 1. twine upload dist/[latest version file]
+1. git commit
