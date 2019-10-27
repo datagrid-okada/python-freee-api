@@ -6,7 +6,7 @@ requires = ["requests>=2.19.1"]
 
 setup(
     name='python-freee-api',
-    version='0.7',
+    version='0.8',
     description='Python based freee api wrapper',
     url='',
     author='Yuki Okada',
