@@ -152,7 +152,7 @@ freee.get_companies()
     - [ ] POST /wallet_txns 明細の作成
 
 - [ ] Walletables (口座)
-    - [ ] GET /walletables 口座一覧の取得
+    - [x] GET /walletables 口座一覧の取得
     - [ ] POST /walletables 口座の作成
 
 

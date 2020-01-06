@@ -1313,6 +1313,47 @@ class Freee():
 
 
 # ===========================================
+#     Walletables (口座)
+# ===========================================
+
+    def get_walletables(self, **payload):
+        """口座一覧の取得
+
+        指定した事業所の口座一覧を取得する
+
+        Args:
+            company_id (int): 事業所ID
+            with_balance (boool): 残高情報を含める
+
+        Note:
+            定義
+                type
+                    bank_account : 銀行口座
+                    credit_card : クレジットカード
+                    wallet : その他の決済口座
+                walletable_balance : 登録残高
+                last_balance : 同期残高
+
+        Returns:
+            dict: like below
+            {
+              "walletables": [
+                {
+                  "id": 1,
+                  "name": "freee銀行",
+                  "bank_id": 3,
+                  "type": "bank_account",
+                  "last_balance": 1565583,
+                  "walletable_balance": 1340261
+                }
+              ]
+            }
+        """
+        request_method = "get"
+        url = urllib.parse.urljoin(self.account_endpoint, ("/").join(["walletables"]))
+        return self.send_request(request_method, url, payload)
+
+# ===========================================
 #     人事労務freee API
 # ===========================================
 
