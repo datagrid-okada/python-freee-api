@@ -75,8 +75,7 @@ class Freee():
 
     def send_request(self, request_method, url, payload):
         if self.confirm_expired():
-            token_dict = self.run_refresh_token()
-            self.save_tokens(token_dict)
+            self.run_refresh_token()
         if request_method == "get":
             headers = {
                 'Content-Type': 'application/json',
