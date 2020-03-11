@@ -3,6 +3,11 @@
 会計freee・人事労務freeeのPythonラッパーライブラリです。
 https://developer.freee.co.jp/
 
+# インストール方法
+```
+pip install python-freee-api
+```
+
 # 認可コード(Authorization code)の取得
 下記のURLにある手順に従って認可コードを取得します。
 https://support.freee.co.jp/hc/ja/articles/115000145263-freee-APIのアクセストークンを取得する
